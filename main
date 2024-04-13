@@ -1,0 +1,13 @@
+import scapy.all as scapy
+
+def packet_handler(packet):
+    if packet.haslayer(scapy.IP):
+        src_ip = packet[scapy.IP].src
+        dst_ip = packet[scapy.IP].dst
+        protocol = packet[scapy.IP].proto
+        payload = packet[scapy.Raw].load if packet.haslayer(scapy.Raw) else ""
+
+        with open("packet_log.txt", "a") as log_file:
+            log_file.write(f"Source IP: {src_ip}, Destination IP: {dst_ip}, Protocol: {protocol}, Payload: {payload}\n")
+
+scapy.sniff(iface="eth0", prn=packet_handler, store=False)
